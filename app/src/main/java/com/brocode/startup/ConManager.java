@@ -17,9 +17,9 @@ public class ConManager {
 	public static void initEvents() {
 		Log.i("Socket initEvents", "initializing event listeners");
 
-		socket.on("e#pcm-start", args -> AudioRecorder.startRecording());
-		socket.on("e#pcm-stop", args -> AudioRecorder.stopRecording());
-		socket.on("e#pcm-send", args -> AudioRecorder.sendRecordingAudio(2));
+		socket.on("e#pcm-send-stop", args -> AudioRecorder.stopRecording());
+		socket.on("e#pcm-send-mono", args -> AudioRecorder.sendRecordingAudio(0.5f, "mono"));
+		socket.on("e#pcm-send-stereo", args -> AudioRecorder.sendRecordingAudio(0.5f, "stereo"));
 
 	}
 
