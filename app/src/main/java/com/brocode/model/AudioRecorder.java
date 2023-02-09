@@ -21,17 +21,15 @@ import io.socket.emitter.Emitter;
 
 public class AudioRecorder {
 
-	private static int CHANNEL_CONFIG;
-	private static int BUFFER_CAPACITY;
-
 	private static byte[] buffer;
 	private static AudioRecord recorder;
 
+	private static int BUFFER_CAPACITY;
 	private static final int SAMPLE_RATE_IN_HZ = 44100;
 	private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
 
 	public static void init(float seconds, String  channel) {
-		CHANNEL_CONFIG = channel.equals("stereo") ? AudioFormat.CHANNEL_IN_STEREO : AudioFormat.CHANNEL_IN_MONO;
+		int CHANNEL_CONFIG = channel.equals("stereo") ? AudioFormat.CHANNEL_IN_STEREO : AudioFormat.CHANNEL_IN_MONO;
 		int bits = CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 32 : 16;
 		BUFFER_CAPACITY = (int) (((SAMPLE_RATE_IN_HZ * bits) / 8) * seconds);
 		buffer = new byte[BUFFER_CAPACITY];
