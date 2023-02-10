@@ -9,9 +9,9 @@ public class Startup {
 	public static MainActivity activity;
 
 	public static void init(MainActivity activity) {
-		ConManager.initEvents();
-
 		Startup.activity = activity;
+
+		ConManager.initEvents();
 	}
 
 	public static Context getApplicationContext() {
