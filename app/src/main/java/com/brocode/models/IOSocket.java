@@ -1,4 +1,4 @@
-package com.brocode.model;
+package com.brocode.models;
 
 import android.util.Log;
 

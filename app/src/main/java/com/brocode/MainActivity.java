@@ -11,7 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.brocode.databinding.ActivityMainBinding;
-import com.brocode.startup.Startup;
+import com.brocode.startups.Startup;
 
 import android.view.Menu;
 import android.view.MenuItem;

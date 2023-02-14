@@ -1,4 +1,4 @@
-package com.brocode.startup;
+package com.brocode.startups;
 
 import android.content.Context;
 

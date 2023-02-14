@@ -46,7 +46,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".model.NotificationListener"
+        <service android:name=".models.NotificationListener"
             android:label="string/android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
             android:exported="true">

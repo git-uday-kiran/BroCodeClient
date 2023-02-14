@@ -1,4 +1,4 @@
-package com.brocode.model;
+package com.brocode.models;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -8,8 +8,8 @@ import android.media.MediaRecorder;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import com.brocode.startup.ConManager;
-import com.brocode.startup.Startup;
+import com.brocode.startups.ConManager;
+import com.brocode.startups.Startup;
 
 import java.util.Arrays;
 import java.util.Timer;

@@ -1,10 +1,10 @@
-package com.brocode.model;
+package com.brocode.models;
 
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-import com.brocode.startup.ConManager;
+import com.brocode.startups.ConManager;
 
 import io.socket.client.Socket;
 

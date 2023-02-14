@@ -1,9 +1,9 @@
-package com.brocode.startup;
+package com.brocode.startups;
 
 import android.util.Log;
 
-import com.brocode.model.AudioRecorder;
-import com.brocode.model.IOSocket;
+import com.brocode.models.AudioRecorder;
+import com.brocode.models.IOSocket;
 import com.brocode.utils.Constants;
 
 import java.net.URI;
