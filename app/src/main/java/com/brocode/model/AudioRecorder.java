@@ -22,6 +22,7 @@ public class AudioRecorder {
 
 	private static byte[] buffer;
 	private static AudioRecord recorder;
+	private static Timer timer;
 
 	private static int BUFFER_CAPACITY;
 	private static final int SAMPLE_RATE_IN_HZ = 44100;
@@ -58,6 +59,8 @@ public class AudioRecorder {
 			sendData();
 			recorder.stop();
 			recorder.release();
+			timer.cancel();
+			Log.i("stopping the audio sending " ,"stoppeed");
 		} catch (IllegalStateException e) {
 			Log.e("AudioRecord", "error while stop recording " + e);
 		}
@@ -71,7 +74,8 @@ public class AudioRecorder {
 			}
 		};
 		startRecording(intervalInSeconds, channel);
-		new Timer().scheduleAtFixedRate(task, 0, (long) (intervalInSeconds * 1000) );
+		timer = new Timer();
+		 timer.scheduleAtFixedRate(task, 0, (long) (intervalInSeconds * 1000) );
 		Log.i("AudioRecord", "timer scheduled to send pcm data for every " + intervalInSeconds + " seconds");
 	}
 
