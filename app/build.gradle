@@ -46,4 +46,5 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
 }
