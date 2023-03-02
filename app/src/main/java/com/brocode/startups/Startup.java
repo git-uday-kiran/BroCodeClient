@@ -1,20 +1,21 @@
 package com.brocode.startups;
 
-import android.content.Context;
+import android.app.Application;
+import android.util.Log;
 
-import com.brocode.MainActivity;
+public class Startup extends Application {
 
-public class Startup {
+	public static Startup singleton;
 
-	public static MainActivity activity;
-
-	public static void init(MainActivity activity) {
-		Startup.activity = activity;
-
-		ConManager.initEvents();
+	public Startup() {
+		if (singleton != null)
+			Log.e("Startup singleton", "re-initializing the singleton");
+		singleton = this;
+		init();
+		Log.d("Startup singleton", "initialized");
 	}
 
-	public static Context getApplicationContext() {
-		return activity.getApplicationContext();
+	public void init() {
+		ConManager.initEvents();
 	}
 }
