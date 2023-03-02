@@ -5,9 +5,14 @@ import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.support.v4.app.ActivityCompat;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+
+import com.brocode.Permissions;
 import com.brocode.startups.ConManager;
 import com.brocode.startups.Startup;
 
@@ -34,10 +39,13 @@ public class AudioRecorder {
 		BUFFER_CAPACITY = (int) (((SAMPLE_RATE_IN_HZ * bits) / 8) * seconds);
 		buffer = new byte[BUFFER_CAPACITY];
 		try {
-			if (ActivityCompat.checkSelfPermission(Startup.getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+			Permissions.checkPermissions();
+			if (ActivityCompat.checkSelfPermission(Startup.singleton.getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
 				recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT, BUFFER_CAPACITY);
-			else
+			else {
+				new Handler(Looper.getMainLooper()).post( ()  -> Toast.makeText(Startup.singleton.getApplicationContext(), "no permission for recording audio", Toast.LENGTH_SHORT).show());
 				throw new ExceptionInInitializerError("failed initialization, no permissions for audio recording");
+			}
 		} catch (ExceptionInInitializerError e) {
 			Log.e("AudioRecord", e.toString());
 		}
