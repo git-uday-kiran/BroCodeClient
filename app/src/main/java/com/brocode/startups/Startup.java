@@ -3,16 +3,22 @@ package com.brocode.startups;
 import android.app.Application;
 import android.util.Log;
 
+import com.brocode.MainActivity;
+
 public class Startup extends Application {
 
-	public static Startup singleton;
+	public static Application app;
+	public static MainActivity activity;
 
 	public Startup() {
-		if (singleton != null)
-			Log.e("Startup singleton", "re-initializing the singleton");
-		singleton = this;
+		Log.d("Startup", (app != null ? "re-" : "") + "initializing startup application");
+		app = this;
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
 		init();
-		Log.d("Startup singleton", "initialized");
 	}
 
 	public void init() {
