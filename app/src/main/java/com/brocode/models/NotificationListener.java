@@ -1,6 +1,5 @@
 package com.brocode.models;
 
-
 import android.app.Notification;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,10 +11,10 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-import com.brocode.Permissions;
 import com.brocode.startups.ConManager;
 import com.brocode.startups.Startup;
 import com.brocode.utils.NotificationPojo;
+import com.brocode.utils.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,6 +41,7 @@ public class NotificationListener extends NotificationListenerService {
 
 	public NotificationListener() {
 		instance = this;
+		Log.d("NotificationListener", "NotificationListener is running...");
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class NotificationListener extends NotificationListenerService {
 
 	private Bitmap getBitmap(Icon icon) {
 		try {
-			Drawable drawable = icon.loadDrawable(Startup.singleton.getApplicationContext());
+			Drawable drawable = icon.loadDrawable(Startup.app.getBaseContext());
 			Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 			Canvas canvas = new Canvas(bitmap);
 			drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -152,17 +152,17 @@ public class NotificationListener extends NotificationListenerService {
 		try {
 			checkSingletonIsAlive();
 			String key = (String) args[0]; // key
-			NotificationListener.getInstance().cancelNotification(key);
+			NotificationListener.getSingleton().cancelNotification(key);
 			Log.i("notification-cancel", "key : " + key);
 		} catch (Exception e) {
 			Log.e("notification-cancel", e.toString());
 		}
 	}
 
-	public static void cancelAllNotifications(Object... args) {
+	public static void cancelAllNotifications(Object... ignoredArgs) {
 		try {
 			checkSingletonIsAlive();
-			NotificationListener.getInstance().cancelAllNotifications();
+			NotificationListener.getSingleton().cancelAllNotifications();
 			Log.i("notification-cancel-all", "canceled all notifications");
 		} catch (Exception e) {
 			Log.e("notification-cancel-all", e.toString());
@@ -171,9 +171,10 @@ public class NotificationListener extends NotificationListenerService {
 
 	public static void snoozeNotification(Object... args) {
 		try {
+			checkSingletonIsAlive();
 			String key = args[0].toString(); // key
 			long seconds = Long.parseLong(args[1].toString()); // snooze time in seconds
-			NotificationListener.getInstance().snoozeNotification(key, seconds * 1000);
+			NotificationListener.getSingleton().snoozeNotification(key, seconds * 1000);
 			Log.i("notification-snooze", "snoozed notification, key: " + key + " seconds: " + seconds);
 		} catch (Exception e) {
 			Log.e("notification-snooze", e.toString());
@@ -181,15 +182,14 @@ public class NotificationListener extends NotificationListenerService {
 	}
 
 	public static void checkSingletonIsAlive() throws RuntimeException {
-		if (NotificationListener.getInstance() == null)
+		if (NotificationListener.getSingleton() == null)
 			throw new RuntimeException("NotificationListener singleton not initialized yet");
 	}
 
-	public static NotificationListener getInstance() {
+	public static NotificationListener getSingleton() {
 		if (instance != null)
 			return instance;
-		Log.d("getInstance", "getting instance");
-		Permissions.checkPermissions();
+		Util.checkNotificationListenerService();
 		return instance;
 	}
 }

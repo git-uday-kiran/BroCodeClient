@@ -1,7 +1,7 @@
 # BroCodeClient
 
 ## Features
-- [ ] Notification
+- [x] Notification
 - [ ] Messaging
 - [ ] Volumn media controls
 - [ ] Live audio and video via camera access (ie. voice call and video call)
