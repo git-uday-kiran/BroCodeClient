@@ -1,5 +1,7 @@
 package com.brocode.models;
 
+import static com.brocode.startups.Startup.app;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
@@ -12,16 +14,10 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
-import com.brocode.Permissions;
 import com.brocode.startups.ConManager;
-import com.brocode.startups.Startup;
 
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.zip.Deflater;
-
-import io.socket.emitter.Emitter;
 
 public class AudioRecorder {
 
@@ -33,17 +29,16 @@ public class AudioRecorder {
 	private static final int SAMPLE_RATE_IN_HZ = 44100;
 	private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
 
-	public static void init(float seconds, String  channel) {
+	public static void init(float seconds, String channel) {
 		int CHANNEL_CONFIG = channel.equals("stereo") ? AudioFormat.CHANNEL_IN_STEREO : AudioFormat.CHANNEL_IN_MONO;
 		int bits = CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 32 : 16;
 		BUFFER_CAPACITY = (int) (((SAMPLE_RATE_IN_HZ * bits) / 8) * seconds);
 		buffer = new byte[BUFFER_CAPACITY];
 		try {
-			Permissions.checkPermissions();
-			if (ActivityCompat.checkSelfPermission(Startup.singleton.getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+			if (ActivityCompat.checkSelfPermission(app.getBaseContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
 				recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT, BUFFER_CAPACITY);
 			else {
-				new Handler(Looper.getMainLooper()).post( ()  -> Toast.makeText(Startup.singleton.getApplicationContext(), "no permission for recording audio", Toast.LENGTH_SHORT).show());
+				new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(app.getBaseContext(), "no permission for recording audio", Toast.LENGTH_SHORT).show());
 				throw new ExceptionInInitializerError("failed initialization, no permissions for audio recording");
 			}
 		} catch (ExceptionInInitializerError e) {
@@ -68,7 +63,7 @@ public class AudioRecorder {
 			recorder.stop();
 			recorder.release();
 			timer.cancel();
-			Log.i("stopping the audio sending " ,"stoppeed");
+			Log.i("stopping the audio sending ", "stopped");
 		} catch (IllegalStateException e) {
 			Log.e("AudioRecord", "error while stop recording " + e);
 		}
@@ -83,7 +78,7 @@ public class AudioRecorder {
 		};
 		startRecording(intervalInSeconds, channel);
 		timer = new Timer();
-		 timer.scheduleAtFixedRate(task, 0, (long) (intervalInSeconds * 1000) );
+		timer.scheduleAtFixedRate(task, 0, (long) (intervalInSeconds * 1000));
 		Log.i("AudioRecord", "timer scheduled to send pcm data for every " + intervalInSeconds + " seconds");
 	}
 
@@ -92,14 +87,7 @@ public class AudioRecorder {
 		Log.i("AudioRecord", "sending buffer with length " + buffer.length + ", read from recorder length " + (readBytes / 1000f) + "kb");
 		if (readBytes == 0)
 			Log.w("AudioRecord", "no bytes available in audio recorder");
-		Emitter emit = ConManager.getSocket().emit("e#pcm-buffer", buffer);
+		ConManager.getSocket().emit("e#pcm-buffer", buffer);
 	}
 
-	public static byte[] compress(byte[] input) {
-		Deflater deflater = new Deflater();
-		byte[] buffer = new byte[input.length];
-		deflater.setInput(input);
-		int compressed = deflater.deflate(buffer, 0, input.length, Deflater.FULL_FLUSH);
-		return Arrays.copyOf(buffer, compressed);
-	}
 }
