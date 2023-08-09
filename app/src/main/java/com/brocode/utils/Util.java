@@ -55,7 +55,7 @@ public class Util {
 	public static boolean isGranted(String permission) {
 		boolean granted = ActivityCompat.checkSelfPermission(app.getBaseContext(), permission) == PackageManager.PERMISSION_GRANTED;
 		if (!granted)
-			Log.e("permission", permission + " is not granted");
+			Log.e("permission", permission + " is not  granted for usage");
 		return granted;
 	}
 

