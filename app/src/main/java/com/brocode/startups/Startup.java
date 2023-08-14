@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.brocode.MainActivity;
 
+import java.io.IOException;
+
 public class Startup extends Application {
 
 	public static Application app;
@@ -18,10 +20,14 @@ public class Startup extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		init();
+		try {
+			init();
+		} catch (IOException e) {
+			Log.d("exception", e.toString());
+		}
 	}
 
-	public void init() {
+	public void init() throws IOException {
 		ConManager.initEvents();
 	}
 }
